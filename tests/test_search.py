@@ -79,10 +79,15 @@ class TestSearchForIdOrSignature:
         cs_advanced.select_period_units('Days')
         cs_advanced.click_filter_reports()
 
-        results_page_count = cs_advanced.results[0].number_of_crashes
-        cssr = cs_advanced.click_first_signature()
-        cssr.click_reports()
-        Assert.equal(results_page_count, cssr.total_items_label)
+        if cs_advanced.are_results_found:
+            results_page_count = cs_advanced.results[0].number_of_crashes
+            cssr = cs_advanced.click_first_signature()
+            cssr.click_reports()
+            Assert.equal(results_page_count, cssr.total_items_label)
+        else:
+            Assert.contains('4 days', cs_advanced._query_results_text_locator)
+            Assert.contains('Firefox', cs_advanced._query_results_text_locator)
+            Assert.equals('No results were found.', cs_advanced.no_results_text)
 
     @pytest.mark.prod
     @pytest.mark.nondestructive
